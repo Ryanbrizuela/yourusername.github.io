@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FirstRound — AI Interview Coach for First-Gen Students</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Epilogue:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0f0e0d;
+  --cream:#f8f4ed;
+  --warm:#f0e9da;
+  --rust:#bf4a28;
+  --rust-light:#e8673e;
+  --gold:#d4a843;
+  --sage:#3d5c38;
+  --muted:#7a7167;
+  --border:rgba(15,14,13,0.1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Epilogue',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 5%;display:flex;align-items:center;justify-content:space-between;background:rgba(248,244,237,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none}
+.logo-mark{width:34px;height:34px;background:var(--rust);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:18px;height:18px;fill:white}
+.logo-text{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);letter-spacing:-0.01em}
+.logo-text span{color:var(--rust)}
+.nav-links{display:flex;align-items:center;gap:0.25rem}
+.nav-links a{font-size:0.85rem;font-weight:500;color:var(--ink);text-decoration:none;padding:0.45rem 0.85rem;border-radius:20px;transition:all 0.2s;opacity:0.65}
+.nav-links a:hover{opacity:1;background:rgba(15,14,13,0.05)}
+.nav-links a.active{opacity:1}
+.nav-cta{background:var(--rust)!important;color:white!important;opacity:1!important;padding:0.45rem 1.2rem!important}
+.nav-cta:hover{background:var(--rust-light)!important}
+
+/* ── PAGE SYSTEM ── */
+.page{display:none;min-height:100vh;padding-top:70px}
+.page.active{display:block}
+
+/* ── HERO ── */
+.hero{min-height:calc(100vh - 70px);display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:center;padding:4rem 5%}
+.hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(191,74,40,0.08);border:1px solid rgba(191,74,40,0.2);color:var(--rust);font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.4rem 0.9rem;border-radius:20px;margin-bottom:1.8rem;opacity:0;animation:fadeUp 0.6s ease 0.1s forwards}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.6rem,4.5vw,4rem);line-height:1.08;letter-spacing:-0.02em;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.7s ease 0.25s forwards}
+.hero h1 em{font-style:italic;color:var(--rust)}
+.hero-sub{font-size:1.05rem;line-height:1.75;color:var(--muted);font-weight:300;max-width:480px;margin-bottom:2.4rem;opacity:0;animation:fadeUp 0.7s ease 0.4s forwards}
+.hero-actions{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;opacity:0;animation:fadeUp 0.7s ease 0.55s forwards}
+.btn{display:inline-flex;align-items:center;gap:0.4rem;padding:0.85rem 1.8rem;border-radius:4px;font-family:'Epilogue',sans-serif;font-weight:600;font-size:0.9rem;text-decoration:none;cursor:pointer;border:none;transition:all 0.2s;letter-spacing:0.02em}
+.btn-primary{background:var(--rust);color:white;box-shadow:3px 3px 0 var(--ink)}
+.btn-primary:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.btn-outline{background:transparent;color:var(--ink);border:1.5px solid rgba(15,14,13,0.25)}
+.btn-outline:hover{border-color:var(--ink);background:rgba(15,14,13,0.03)}
+.hero-stats{display:flex;gap:2.5rem;margin-top:3rem;padding-top:2.5rem;border-top:1px solid var(--border);opacity:0;animation:fadeUp 0.7s ease 0.7s forwards}
+.stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--ink);display:block;line-height:1}
+.stat-label{font-size:0.75rem;color:var(--muted);font-weight:400;margin-top:0.3rem;display:block}
+
+/* HERO RIGHT */
+.hero-right{opacity:0;animation:fadeIn 1s ease 0.8s forwards;position:relative}
+.photo-stack{position:relative;height:520px}
+.photo-main{width:75%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;position:absolute;top:0;right:0;box-shadow:0 24px 60px rgba(15,14,13,0.15)}
+.photo-accent{width:52%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;position:absolute;bottom:20px;left:0;box-shadow:0 16px 40px rgba(15,14,13,0.18);border:4px solid var(--cream)}
+.photo-badge{position:absolute;bottom:120px;right:-20px;background:white;border-radius:10px;padding:0.8rem 1rem;box-shadow:0 8px 24px rgba(15,14,13,0.12);font-size:0.78rem;font-weight:600;white-space:nowrap;border:1px solid var(--border)}
+.photo-badge span{color:var(--sage);display:block;font-size:1.1rem;font-weight:700}
+
+/* ── STATS BAR ── */
+.stats-bar{background:var(--ink);color:var(--cream);padding:2rem 5%;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.sbar-item{text-align:center;padding:0.5rem}
+.sbar-num{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--gold);display:block;line-height:1;margin-bottom:0.3rem}
+.sbar-label{font-size:0.75rem;opacity:0.5;letter-spacing:0.05em}
+
+/* ── EMAIL CAPTURE ── */
+.capture-section{background:var(--warm);padding:5rem 5%;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.capture-label{font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:0.8rem}
+.capture-section h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.15;margin-bottom:1rem}
+.capture-section p{color:var(--muted);line-height:1.7;font-weight:300;font-size:0.95rem}
+.email-form{background:white;border-radius:12px;padding:2rem;box-shadow:0 8px 32px rgba(15,14,13,0.07);border:1px solid var(--border)}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.78rem;font-weight:600;color:var(--ink);margin-bottom:0.4rem;letter-spacing:0.04em}
+.form-group input{width:100%;padding:0.75rem 1rem;border:1.5px solid rgba(15,14,13,0.15);border-radius:6px;font-family:'Epilogue',sans-serif;font-size:0.9rem;color:var(--ink);background:var(--cream);transition:border-color 0.2s}
+.form-group input:focus{outline:none;border-color:var(--rust)}
+.form-submit{width:100%;margin-top:0.5rem}
+.form-confirm{display:none;text-align:center;padding:1.5rem;background:rgba(61,92,56,0.07);border-radius:8px;border:1px solid rgba(61,92,56,0.2)}
+.form-confirm h4{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--sage);margin-bottom:0.4rem}
+.form-confirm p{font-size:0.85rem;color:var(--muted)}
+
+/* ── TESTIMONIAL ── */
+.testimonials{padding:5rem 5%}
+.section-label{font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:0.8rem}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.15;margin-bottom:3rem;max-width:500px}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.testi-card{background:white;border-radius:10px;padding:1.8rem;border:1px solid var(--border);transition:transform 0.3s,box-shadow 0.3s}
+.testi-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(15,14,13,0.08)}
+.testi-quote{font-size:1.8rem;color:var(--rust);line-height:1;margin-bottom:0.8rem;font-family:'Playfair Display',serif}
+.testi-text{font-size:0.9rem;line-height:1.7;color:var(--muted);font-weight:300;margin-bottom:1.2rem}
+.testi-author{font-weight:600;font-size:0.85rem}
+.testi-role{font-size:0.78rem;color:var(--muted)}
+
+/* ── ABOUT PAGE ── */
+.about-hero{padding:5rem 5%;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
+.about-photo-wrap{position:relative}
+.about-photo-main{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:12px;box-shadow:0 24px 60px rgba(15,14,13,0.12)}
+.about-photo-small{width:45%;aspect-ratio:1;object-fit:cover;border-radius:8px;position:absolute;bottom:-30px;right:-30px;border:4px solid var(--cream);box-shadow:0 12px 32px rgba(15,14,13,0.15)}
+.about-eyebrow{font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:1rem}
+.about-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3rem);line-height:1.1;margin-bottom:1.5rem}
+.about-hero p{font-size:0.97rem;line-height:1.8;color:var(--muted);font-weight:300;margin-bottom:1.2rem}
+.video-section{background:var(--ink);padding:5rem 5%;text-align:center}
+.video-section h2{font-family:'Playfair Display',serif;font-size:2rem;color:var(--cream);margin-bottom:0.8rem}
+.video-section p{color:rgba(248,244,237,0.55);margin-bottom:2.5rem;font-size:0.95rem}
+.video-frame{max-width:700px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.4);position:relative;background:#1a1a1a;aspect-ratio:16/9}
+.video-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);gap:1rem;background:linear-gradient(135deg,#1a1a1a,#2a2a2a)}
+.play-btn{width:64px;height:64px;background:var(--rust);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.2s}
+.play-btn:hover{transform:scale(1.1)}
+.play-btn svg{width:24px;height:24px;fill:white;margin-left:4px}
+.video-note{font-size:0.8rem;margin-top:0.4rem}
+.mission-section{padding:5rem 5%;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}
+.mission-card{padding:2rem;border:1px solid var(--border);border-radius:10px;transition:border-color 0.2s}
+.mission-card:hover{border-color:var(--rust)}
+.mission-num{font-family:'Playfair Display',serif;font-size:2.5rem;color:rgba(15,14,13,0.07);margin-bottom:0.6rem;line-height:1}
+.mission-card h3{font-size:1rem;font-weight:600;margin-bottom:0.6rem}
+.mission-card p{font-size:0.88rem;line-height:1.7;color:var(--muted);font-weight:300}
+
+/* ── HOW IT WORKS ── */
+.hiw-hero{padding:5rem 5% 3rem;text-align:center}
+.hiw-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3.2rem);margin-bottom:1rem}
+.hiw-hero p{color:var(--muted);max-width:560px;margin:0 auto;font-size:1rem;line-height:1.7;font-weight:300}
+.steps-section{padding:3rem 5%;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-bottom:2rem}
+.step-card{padding:2rem;background:white;border-radius:10px;border:1px solid var(--border);position:relative;transition:all 0.3s}
+.step-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(15,14,13,0.08)}
+.step-num{font-family:'Playfair Display',serif;font-size:3.5rem;color:rgba(15,14,13,0.06);line-height:1;margin-bottom:0.8rem}
+.step-icon{font-size:1.6rem;margin-bottom:0.8rem}
+.step-card h3{font-size:1rem;font-weight:600;margin-bottom:0.5rem}
+.step-card p{font-size:0.87rem;line-height:1.7;color:var(--muted);font-weight:300}
+
+/* DEMO */
+.demo-section{padding:3rem 5% 5rem}
+.demo-label{font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:0.8rem;text-align:center}
+.demo-title{font-family:'Playfair Display',serif;font-size:2rem;text-align:center;margin-bottom:2.5rem}
+.demo-wrap{max-width:800px;margin:0 auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(15,14,13,0.1);border:1px solid var(--border)}
+.demo-topbar{background:var(--ink);padding:0.85rem 1.2rem;display:flex;align-items:center;justify-content:space-between}
+.demo-title-bar{color:white;font-size:0.85rem;font-weight:500}
+.demo-badge{background:rgba(248,244,237,0.1);color:rgba(248,244,237,0.6);font-size:0.7rem;padding:0.2rem 0.7rem;border-radius:20px}
+.demo-role-select{padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center}
+.demo-role-label{font-size:0.78rem;color:var(--muted);margin-right:0.4rem}
+.role-chip{font-size:0.78rem;padding:0.3rem 0.8rem;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-family:'Epilogue',sans-serif;transition:all 0.2s;color:var(--ink)}
+.role-chip.active,.role-chip:hover{border-color:var(--rust);background:rgba(191,74,40,0.06);color:var(--rust)}
+.demo-chat{padding:1.2rem;height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:0.8rem}
+.demo-chat::-webkit-scrollbar{width:4px}
+.demo-chat::-webkit-scrollbar-track{background:transparent}
+.demo-chat::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.msg-wrap{display:flex;gap:0.6rem;align-items:flex-end}
+.msg-wrap.user{flex-direction:row-reverse}
+.msg-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700}
+.msg-avatar.ai{background:var(--rust);color:white}
+.msg-avatar.user{background:var(--ink);color:var(--cream)}
+.msg-bubble{max-width:78%;padding:0.75rem 1rem;border-radius:12px;font-size:0.85rem;line-height:1.6}
+.msg-bubble.ai{background:var(--warm);border-bottom-left-radius:3px}
+.msg-bubble.user{background:var(--rust);color:white;border-bottom-right-radius:3px}
+.msg-bubble .score{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(61,92,56,0.1);color:var(--sage);font-size:0.72rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:12px;margin-top:0.4rem}
+.typing{display:flex;gap:4px;align-items:center;padding:0.6rem 0.8rem}
+.typing span{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:bounce 1.2s infinite}
+.typing span:nth-child(2){animation-delay:0.2s}
+.typing span:nth-child(3){animation-delay:0.4s}
+.demo-input-row{padding:0.8rem 1.2rem;border-top:1px solid var(--border);display:flex;gap:0.6rem}
+.demo-input{flex:1;padding:0.6rem 0.9rem;border:1.5px solid var(--border);border-radius:6px;font-family:'Epilogue',sans-serif;font-size:0.85rem;color:var(--ink);background:var(--cream)}
+.demo-input:focus{outline:none;border-color:var(--rust)}
+.demo-send{background:var(--rust);color:white;border:none;border-radius:6px;padding:0.6rem 1rem;font-family:'Epilogue',sans-serif;font-weight:600;font-size:0.82rem;cursor:pointer;transition:background 0.2s}
+.demo-send:hover{background:var(--rust-light)}
+
+/* ── CONTACT ── */
+.contact-hero{padding:5rem 5% 3rem}
+.contact-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3rem);margin-bottom:1rem}
+.contact-hero p{color:var(--muted);font-weight:300;font-size:1rem;max-width:500px;line-height:1.7}
+.contact-grid{padding:2rem 5% 5rem;display:grid;grid-template-columns:1fr 1.4fr;gap:4rem;align-items:start}
+.contact-info h3{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1.5rem}
+.contact-item{display:flex;gap:1rem;margin-bottom:1.5rem;align-items:flex-start}
+.contact-icon{width:40px;height:40px;border-radius:8px;background:rgba(191,74,40,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+.contact-item-label{font-size:0.75rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:0.08em}
+.contact-item-val{font-size:0.92rem;font-weight:500;color:var(--ink)}
+.contact-form-wrap{background:white;border-radius:12px;padding:2.5rem;border:1px solid var(--border);box-shadow:0 8px 32px rgba(15,14,13,0.06)}
+.contact-form-wrap h3{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:0.4rem}
+.contact-form-wrap p{font-size:0.85rem;color:var(--muted);margin-bottom:1.8rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+textarea.form-input{width:100%;padding:0.75rem 1rem;border:1.5px solid rgba(15,14,13,0.15);border-radius:6px;font-family:'Epilogue',sans-serif;font-size:0.9rem;color:var(--ink);background:var(--cream);resize:vertical;min-height:110px;transition:border-color 0.2s}
+textarea.form-input:focus{outline:none;border-color:var(--rust)}
+input.form-input{width:100%;padding:0.75rem 1rem;border:1.5px solid rgba(15,14,13,0.15);border-radius:6px;font-family:'Epilogue',sans-serif;font-size:0.9rem;color:var(--ink);background:var(--cream);transition:border-color 0.2s}
+input.form-input:focus{outline:none;border-color:var(--rust)}
+.field-label{display:block;font-size:0.78rem;font-weight:600;color:var(--ink);margin-bottom:0.4rem;letter-spacing:0.04em}
+.field-group{margin-bottom:1rem}
+.contact-confirm{display:none;text-align:center;padding:2rem;background:rgba(61,92,56,0.07);border-radius:8px;border:1px solid rgba(61,92,56,0.2)}
+.contact-confirm h4{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--sage);margin-bottom:0.5rem}
+
+/* ── FOOTER ── */
+footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700}
+.footer-logo span{color:var(--rust)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{color:rgba(248,244,237,0.45);font-size:0.82rem;text-decoration:none;transition:color 0.2s;cursor:pointer}
+.footer-links a:hover{color:var(--cream)}
+.footer-copy{font-size:0.78rem;opacity:0.35}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .hero{grid-template-columns:1fr;padding-top:3rem}
+  .hero-right{display:none}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .capture-section{grid-template-columns:1fr}
+  .testi-grid{grid-template-columns:1fr}
+  .about-hero{grid-template-columns:1fr}
+  .about-photo-small{display:none}
+  .steps-section{grid-template-columns:1fr}
+  .mission-section{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  footer{flex-direction:column;text-align:center}
+}
+
+
+/* ── AUTH MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,14,13,0.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity 0.25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--cream);border-radius:14px;padding:2.2rem;width:100%;max-width:400px;box-shadow:0 24px 60px rgba(15,14,13,0.18);transform:translateY(20px);transition:transform 0.25s}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.7rem;margin-bottom:0.3rem}
+.modal-sub{color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem;font-weight:300}
+.mfield{margin-bottom:0.9rem}
+.mfield label{display:block;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;margin-bottom:0.35rem}
+.mfield input{width:100%;padding:0.65rem 0.85rem;border:1.5px solid rgba(15,14,13,0.15);border-radius:6px;font-family:'Epilogue',sans-serif;font-size:0.9rem;background:white;transition:border-color 0.2s}
+.mfield input:focus{outline:none;border-color:var(--rust)}
+.modal-err{background:rgba(191,74,40,0.08);border:1px solid rgba(191,74,40,0.2);color:var(--rust);padding:0.6rem 0.85rem;border-radius:6px;font-size:0.82rem;margin-bottom:0.9rem;display:none}
+.modal-switch{text-align:center;margin-top:1rem;font-size:0.82rem;color:var(--muted)}
+.modal-switch a{color:var(--rust);cursor:pointer;font-weight:500}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted);line-height:1}
+
+/* ── REAL INTERVIEW UI ── */
+.iv-tabs{display:flex;gap:0.4rem;padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);background:var(--warm)}
+.iv-tab{font-size:0.8rem;font-weight:600;padding:0.4rem 0.9rem;border-radius:20px;border:none;cursor:pointer;font-family:'Epilogue',sans-serif;background:transparent;color:var(--muted);transition:all 0.2s}
+.iv-tab.active{background:var(--rust);color:white}
+.iv-panel{display:none;padding:1.2rem}
+.iv-panel.active{display:block}
+.live-badge{display:inline-flex;align-items:center;gap:0.35rem;font-size:0.7rem;font-weight:600;color:#4ade80;letter-spacing:0.08em}
+.live-dot{width:6px;height:6px;background:#4ade80;border-radius:50%;animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.score-bar-wrap{display:flex;align-items:center;gap:0.6rem;margin-top:0.5rem;font-size:0.75rem;color:var(--muted)}
+.score-bar-track{flex:1;height:5px;background:rgba(15,14,13,0.08);border-radius:3px;overflow:hidden}
+.score-bar-fill{height:100%;background:var(--rust);border-radius:3px;transition:width 1s ease}
+.iv-gate{padding:2.5rem 1.2rem;text-align:center}
+.iv-gate h3{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:0.6rem}
+.iv-gate p{font-size:0.88rem;color:var(--muted);font-weight:300;margin-bottom:1.4rem;line-height:1.6}
+.user-chip{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;font-weight:500;padding:0.4rem 1rem;background:rgba(15,14,13,0.05);border-radius:20px;cursor:pointer;border:none;font-family:'Epilogue',sans-serif}
+.user-chip .udot{width:7px;height:7px;background:var(--sage);border-radius:50%}
+.spinner-sm{width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:middle;margin-right:4px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast-fr{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;padding:0.8rem 1.2rem;border-radius:8px;font-size:0.85rem;font-weight:500;background:var(--sage);color:white;transform:translateY(80px);opacity:0;transition:all 0.3s;max-width:300px}
+.toast-fr.show{transform:translateY(0);opacity:1}
+
+/* Placeholder image style */
+.photo-placeholder{background:linear-gradient(135deg,#e8ddd0,#d4c5b2);border-radius:12px;display:flex;align-items:center;justify-content:center;color:rgba(15,14,13,0.25);font-size:0.8rem;text-align:center;font-weight:500}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a class="nav-logo" onclick="showPage('home')" style="cursor:pointer">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <span class="logo-text">First<span>Round</span></span>
+  </a>
+  <div class="nav-links">
+    <a onclick="showPage('home')" id="nav-home" class="active">Home</a>
+    <a onclick="showPage('about')" id="nav-about">About</a>
+    <a onclick="showPage('how')" id="nav-how">How It Works</a>
+    <a onclick="showPage('coach')" id="nav-coach">AI Coach</a>
+    <a onclick="showPage('contact')" id="nav-contact">Contact</a>
+    <a onclick="showPage('coach')" class="btn nav-cta">Try It Free →</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     HOME PAGE
+════════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-badge">AI Interview Coach</div>
+      <h1>Land the job <em>nobody</em> in your family has had before.</h1>
+      <p class="hero-sub">FirstRound is the AI coach built for first-generation college students. Real prep, plain English, zero assumptions about what you already know.</p>
+      <div class="hero-actions">
+        <a onclick="showPage('coach')" class="btn btn-primary" style="cursor:pointer">Try It Free →</a>
+        <a onclick="showPage('home');setTimeout(()=>document.getElementById('capture').scrollIntoView({behavior:'smooth'}),100)" class="btn btn-outline" style="cursor:pointer">Get Early Access</a>
+      </div>
+      <div class="hero-stats">
+        <div><span class="stat-num">3 in 4</span><span class="stat-label">first-gen students feel unprepared for interviews</span></div>
+        <div><span class="stat-num">$0</span><span class="stat-label">to start practicing today</span></div>
+        <div><span class="stat-num">24/7</span><span class="stat-label">coach available before any interview</span></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="photo-stack">
+        <img src="" style="background:#c8b8a2;object-fit:cover" class="photo-main" style="width:75%;aspect-ratio:3/4;object-fit:cover;object-position:top;border-radius:12px;position:absolute;top:0;right:0;box-shadow:0 24px 60px rgba(15,14,13,0.15)">
+        <img src="" style="background:#b8a898;object-fit:cover" class="photo-accent" style="width:180px;height:180px;object-fit:cover;object-position:top center;border-radius:8px;position:absolute;bottom:20px;left:0;box-shadow:0 16px 40px rgba(15,14,13,0.18);border:4px solid var(--cream)">
+        <div class="photo-badge">
+          <span>+41%</span>
+          Avg confidence after 5 sessions
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="sbar-item"><span class="sbar-num">500+</span><span class="sbar-label">Students on waitlist</span></div>
+    <div class="sbar-item"><span class="sbar-num">12</span><span class="sbar-label">Universities reached</span></div>
+    <div class="sbar-item"><span class="sbar-num">$12/mo</span><span class="sbar-label">vs $200/hr human coach</span></div>
+    <div class="sbar-item"><span class="sbar-num">100%</span><span class="sbar-label">Built for first-gen students</span></div>
+  </div>
+
+  <!-- Email Capture -->
+  <section class="capture-section" id="capture">
+    <div>
+      <div class="capture-label">Join the Waitlist</div>
+      <h2>Be the first to know when we launch.</h2>
+      <p>We're opening early access to 100 students this fall. Join the list and get a free mock interview session when we go live — no credit card, no catch.</p>
+    </div>
+    <div class="email-form" id="email-form-wrap">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="signup-name" placeholder="Your name" />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="signup-email" placeholder="you@university.edu" />
+      </div>
+      <div class="form-group">
+        <label>School (optional)</label>
+        <input type="text" id="signup-school" placeholder="Penn State, Temple, etc." />
+      </div>
+      <button class="btn btn-primary form-submit" onclick="submitEmail()">Save My Spot →</button>
+    </div>
+    <div class="form-confirm" id="form-confirm">
+      <h4>You're on the list! 🎉</h4>
+      <p>We'll email you as soon as early access opens. In the meantime, check out how FirstRound works.</p>
+      <br>
+      <a onclick="showPage('how')" class="btn btn-primary" style="cursor:pointer;margin-top:0.5rem">See How It Works →</a>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="section-label">What students say</div>
+    <h2 class="section-title">They didn't have a mentor. Now they do.</h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">I had no idea what STAR even meant before FirstRound. After two sessions, I walked into my Google interview and actually felt ready. I got the internship.</p>
+        <div class="testi-author">Marcus T.</div>
+        <div class="testi-role">CS Junior → Google SWE Intern</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">My parents never went to college. There was literally no one I could practice with. FirstRound felt like talking to someone who actually understood where I was coming from.</p>
+        <div class="testi-author">Priya N.</div>
+        <div class="testi-role">Business Senior → JP Morgan Analyst</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <p class="testi-text">I kept saying "we" in my answers. FirstRound caught it every time and made me retell the story with "I." That one fix changed everything.</p>
+        <div class="testi-author">DeShawn R.</div>
+        <div class="testi-role">Engineering Junior → Boeing Co-op</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">First<span>Round</span></div>
+    <div class="footer-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('about')">About</a>
+      <a onclick="showPage('how')">How It Works</a>
+      <a onclick="showPage('coach')">AI Coach</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+    <div class="footer-copy">© 2026 FirstRound. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     ABOUT PAGE
+════════════════════════════════════════════════ -->
+<div class="page" id="page-about">
+  <section class="about-hero">
+    <div class="about-photo-wrap">
+      <img src="" style="background:#d4c4b0;object-fit:cover" class="about-photo-main" style="width:100%;height:500px;object-fit:cover;object-position:top;border-radius:12px;box-shadow:0 24px 60px rgba(15,14,13,0.12)">
+      <img src="" style="background:#c8b8a2;object-fit:cover" class="about-photo-small" style="width:200px;height:200px;object-fit:cover;object-position:top center;border-radius:8px;position:absolute;bottom:-30px;right:-30px;border:4px solid var(--cream);box-shadow:0 12px 32px rgba(15,14,13,0.15)">
+    </div>
+    <div>
+      <div class="about-eyebrow">Our Story</div>
+      <h1>Built by someone who didn't know the rules either.</h1>
+      <p>I'm the first person in my family to go to college. I remember sitting in my car before my first real job interview, not knowing what "behavioral questions" meant, having no one to call.</p>
+      <p>I got the job eventually — but it took three failed interviews to learn what I should have known going in. Nobody should have to fail their way through a process that could have been explained in an afternoon.</p>
+      <p>FirstRound is the coach I wish I had. It doesn't assume you know the rules. It explains them, practices with you, and sends you in ready.</p>
+      <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap">
+        <a onclick="showPage('how')" class="btn btn-primary" style="cursor:pointer">See How It Works →</a>
+        <a onclick="showPage('contact')" class="btn btn-outline" style="cursor:pointer">Get In Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Section -->
+  <section class="video-section">
+    <h2>Watch the 30-second pitch</h2>
+    <p>What FirstRound is, who it's for, and why it matters.</p>
+    <div class="video-frame">
+      <!-- Replace the src below with your actual YouTube embed URL -->
+      <!-- e.g. src="https://www.youtube.com/embed/YOUR_VIDEO_ID" -->
+      <iframe width="100%" height="100%" src="https://www.youtube.com/embed/RW-CNWoz1HM"
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen style="display:block"></iframe>
+    </div>
+  </section>
+
+  <!-- Mission Cards -->
+  <section class="mission-section">
+    <div class="mission-card">
+      <div class="mission-num">01</div>
+      <h3>Democratize access</h3>
+      <p>A $200/hr interview coach is not an option for most first-gen students. We built something just as good for the price of a Spotify subscription.</p>
+    </div>
+    <div class="mission-card">
+      <div class="mission-num">02</div>
+      <h3>Explain the game</h3>
+      <p>Most interview tools assume you already know how this works. We don't. We teach the rules while helping you play — no jargon left undefined.</p>
+    </div>
+    <div class="mission-card">
+      <div class="mission-num">03</div>
+      <h3>Honor your story</h3>
+      <p>Campus jobs, family responsibilities, and side hustles are real experience. We help you tell those stories in the language employers respond to.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">First<span>Round</span></div>
+    <div class="footer-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('about')">About</a>
+      <a onclick="showPage('how')">How It Works</a>
+      <a onclick="showPage('coach')">AI Coach</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+    <div class="footer-copy">© 2026 FirstRound. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     HOW IT WORKS PAGE
+════════════════════════════════════════════════ -->
+<div class="page" id="page-how">
+  <section class="hiw-hero">
+    <div class="section-label">The Process</div>
+    <h1>From anxious to offer-ready.</h1>
+    <p>Three simple steps — and an AI that meets you exactly where you are, not where it assumes you should be.</p>
+  </section>
+
+  <div class="steps-section">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">📋</div>
+      <h3>Paste the job description</h3>
+      <p>Drop in any posting and FirstRound extracts the 5–7 most likely questions, reads the company culture, and builds a custom prep plan just for that role.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">🎙️</div>
+      <h3>Do a live mock interview</h3>
+      <p>Answer questions out loud or in writing. The coach responds in real time — one question at a time, just like the real thing. No pressure, unlimited attempts.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">📈</div>
+      <h3>Get coached on your answers</h3>
+      <p>Instant feedback on structure, confidence, and impact. See a stronger version of your own answer — using your own experiences — and learn exactly why it works.</p>
+    </div>
+  </div>
+
+  <!-- Demo + Real AI Section -->
+  <section class="demo-section">
+
+    <!-- ── SCRIPTED DEMO ── -->
+    <div class="demo-label">Try It Live</div>
+    <div class="demo-title">See how it works.</div>
+    <p style="text-align:center;color:var(--muted);font-size:0.92rem;font-weight:300;max-width:520px;margin:0 auto 2rem;line-height:1.7">Play through a scripted demo below — then sign in to use the real AI coach.</p>
+
+    <div class="demo-wrap" style="margin-bottom:4rem">
+      <div class="demo-topbar">
+        <span class="demo-title-bar">FirstRound Coach</span>
+        <span class="demo-badge">● Preview Demo</span>
+      </div>
+      <div class="demo-role-select">
+        <span class="demo-role-label">Interview for:</span>
+        <button class="role-chip active" onclick="setRole(this,'Software Engineering Intern')">SWE Intern</button>
+        <button class="role-chip" onclick="setRole(this,'Marketing Analyst')">Marketing Analyst</button>
+        <button class="role-chip" onclick="setRole(this,'Finance Intern')">Finance Intern</button>
+        <button class="role-chip" onclick="setRole(this,'Product Manager')">Product Manager</button>
+      </div>
+      <div class="demo-chat" id="demo-chat"></div>
+      <div class="demo-input-row">
+        <input class="demo-input" id="demo-input" placeholder="Type your answer..." onkeydown="if(event.key==='Enter')sendDemo()" />
+        <button class="demo-send" onclick="sendDemo()">Send</button>
+      </div>
+    </div>
+
+    <!-- nudge to coach page -->
+    <div style="text-align:center;padding:3rem 5%;background:var(--warm);margin-top:2rem">
+      <div class="section-label">Ready to go further?</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:0.8rem">Try the real AI coach.</h2>
+      <p style="color:var(--muted);font-size:0.95rem;font-weight:300;max-width:480px;margin:0 auto 1.8rem;line-height:1.7">The demo above is scripted. The real thing uses live Claude AI — it adapts to your actual answers, scores them, and rewrites them in your voice.</p>
+      <button onclick="showPage('coach')" class="btn btn-primary">Open AI Coach →</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">First<span>Round</span></div>
+    <div class="footer-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('about')">About</a>
+      <a onclick="showPage('how')">How It Works</a>
+      <a onclick="showPage('coach')">AI Coach</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+    <div class="footer-copy">© 2026 FirstRound. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     AI COACH PAGE
+════════════════════════════════════════════════ -->
+<div class="page" id="page-coach">
+  <section style="padding:3rem 5% 1.5rem">
+    <div class="section-label">AI Interview Coach</div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:0.5rem">
+      <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,2.8rem);line-height:1.1">Your personal interview coach.</h1>
+      <div id="nav-user-area" style="display:flex;gap:0.6rem;align-items:center">
+        <button class="btn btn-primary btn-sm" onclick="openModal('login')" style="box-shadow:none">Sign in</button>
+        <button class="btn btn-outline btn-sm" onclick="openModal('register')">Create free account</button>
+      </div>
+      <div id="nav-user-chip" style="display:none">
+        <button class="user-chip" onclick="doLogout()"><span class="udot"></span><span id="chip-name"></span>&nbsp;·&nbsp;log out</button>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-weight:300;font-size:0.97rem;max-width:560px;line-height:1.7">Real Claude AI. Three modes. Create a free account to unlock everything — no credit card needed.</p>
+  </section>
+
+  <div style="padding:0 5% 4rem">
+    <div class="demo-wrap" style="max-width:900px">
+      <div class="demo-topbar" style="justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:0.8rem">
+          <span class="demo-title-bar">FirstRound Coach</span>
+          <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+        </div>
+      </div>
+
+      <div class="iv-tabs" id="iv-tabs" style="display:none">
+        <button class="iv-tab active" onclick="switchIvTab('interview',this)">🎙&nbsp; Mock Interview</button>
+        <button class="iv-tab" onclick="switchIvTab('coach',this)">📈&nbsp; Answer Coach</button>
+        <button class="iv-tab" onclick="switchIvTab('prep',this)">📋&nbsp; Prep Plan</button>
+      </div>
+
+      <!-- GATE -->
+      <div class="iv-panel active" id="iv-gate-panel">
+        <div class="iv-gate">
+          <h3>Get real AI coaching in 30 seconds.</h3>
+          <p>Create a free account to access the live mock interview, answer coach, and job-specific prep plans. No credit card needed.</p>
+          <div style="display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="openModal('register')">Create free account →</button>
+            <button class="btn btn-outline" onclick="openModal('login')">I already have one</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOCK INTERVIEW PANEL -->
+      <div class="iv-panel" id="iv-interview-panel">
+        <div id="iv-setup">
+          <div style="display:flex;gap:0.8rem;margin-bottom:1rem;flex-wrap:wrap">
+            <input class="demo-input" id="iv-role" placeholder="Role (e.g. Software Engineering Intern)" style="flex:2;min-width:180px" />
+            <input class="demo-input" id="iv-company" placeholder="Company (optional)" style="flex:1;min-width:140px" />
+            <button class="demo-send" onclick="startInterview()">Start →</button>
+          </div>
+        </div>
+        <div id="iv-chat-area" style="display:none">
+          <div class="demo-chat" id="iv-msgs" style="height:380px"></div>
+          <div class="demo-input-row">
+            <input class="demo-input" id="iv-msg-input" placeholder="Type your answer..." onkeydown="if(event.key==='Enter')sendIvMsg()" />
+            <button class="demo-send" onclick="sendIvMsg()">Send</button>
+          </div>
+          <div style="padding:0.6rem 0;display:flex;gap:0.7rem;align-items:center">
+            <button class="demo-send" onclick="saveIvSession()" style="background:var(--sage);font-size:0.78rem;padding:0.4rem 0.9rem">💾 Save session</button>
+            <button onclick="resetInterview()" style="font-size:0.78rem;color:var(--muted);background:none;border:none;cursor:pointer">Start over</button>
+            <span id="iv-score-wrap" style="margin-left:auto;display:none">
+              <span style="font-size:0.75rem;color:var(--muted)">Last score:</span>
+              <strong id="iv-score-num" style="color:var(--rust);margin-left:4px"></strong>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANSWER COACH PANEL -->
+      <div class="iv-panel" id="iv-coach-panel">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem">
+          <div>
+            <div style="margin-bottom:0.85rem">
+              <label style="font-size:0.75rem;font-weight:600;display:block;margin-bottom:0.4rem;letter-spacing:0.04em">Interview Question</label>
+              <input class="demo-input" id="coach-q" placeholder="e.g. Tell me about a time you led a team..." style="width:100%" />
+            </div>
+            <div style="margin-bottom:0.85rem">
+              <label style="font-size:0.75rem;font-weight:600;display:block;margin-bottom:0.4rem;letter-spacing:0.04em">Your Answer</label>
+              <textarea class="demo-input" id="coach-a" placeholder="Write what you'd actually say — don't overthink it..." style="width:100%;min-height:130px;resize:vertical;line-height:1.55"></textarea>
+            </div>
+            <div style="margin-bottom:0.85rem">
+              <label style="font-size:0.75rem;font-weight:600;display:block;margin-bottom:0.4rem;letter-spacing:0.04em">Role (optional)</label>
+              <input class="demo-input" id="coach-role" placeholder="e.g. Marketing Analyst Intern" style="width:100%" />
+            </div>
+            <button class="demo-send" onclick="analyzeAnswer()" id="coach-btn" style="width:100%">Coach my answer →</button>
+          </div>
+          <div id="coach-result">
+            <div style="text-align:center;padding:3rem 1rem;color:var(--muted);font-size:0.88rem;font-weight:300;line-height:1.7">
+              📈<br><br>Your coaching feedback will appear here —<br>score, rewrite, and exactly what to fix.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREP PLAN PANEL -->
+      <div class="iv-panel" id="iv-prep-panel">
+        <label style="font-size:0.75rem;font-weight:600;display:block;margin-bottom:0.5rem;letter-spacing:0.04em">Job Description</label>
+        <textarea class="demo-input" id="prep-jd" placeholder="Paste the full job posting here — title, responsibilities, requirements, the whole thing. The more detail the better." style="width:100%;min-height:150px;resize:vertical;line-height:1.6;margin-bottom:0.9rem"></textarea>
+        <button class="demo-send" onclick="generatePrep()" id="prep-btn">Generate my prep plan →</button>
+        <div id="prep-result" style="margin-top:1.2rem"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">First<span>Round</span></div>
+    <div class="footer-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('about')">About</a>
+      <a onclick="showPage('how')">How It Works</a>
+      <a onclick="showPage('coach')">AI Coach</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+    <div class="footer-copy">© 2026 FirstRound. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CONTACT PAGE
+════════════════════════════════════════════════ -->
+<div class="page" id="page-contact">
+  <section class="contact-hero">
+    <div class="section-label">Get In Touch</div>
+    <h1>We'd love to hear from you.</h1>
+    <p>Questions, partnership ideas, or just want to share your story — reach out and a real human will get back to you.</p>
+  </section>
+
+  <div class="contact-grid">
+    <div class="contact-info">
+      <h3>Other ways to reach us</h3>
+      <div class="contact-item">
+        <div class="contact-icon">✉️</div>
+        <div>
+          <div class="contact-item-label">Email</div>
+          <div class="contact-item-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="177f727b7b7857717e656463657862797339767e">[email&#160;protected]</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🐦</div>
+        <div>
+          <div class="contact-item-label">Twitter / X</div>
+          <div class="contact-item-val">@firstround_ai</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">💼</div>
+        <div>
+          <div class="contact-item-label">LinkedIn</div>
+          <div class="contact-item-val">linkedin.com/company/firstround-ai</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🎓</div>
+        <div>
+          <div class="contact-item-label">University partnerships</div>
+          <div class="contact-item-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aadacbd8dec4cfd8d9eaccc3d8d9ded8c5dfc4ce84cbc3">[email&#160;protected]</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-wrap" id="contact-form-wrap">
+      <h3>Send a message</h3>
+      <p>We respond within one business day.</p>
+      <div class="form-row">
+        <div class="field-group">
+          <label class="field-label">First Name</label>
+          <input type="text" class="form-input" id="cf-first" placeholder="First name" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Last Name</label>
+          <input type="text" class="form-input" id="cf-last" placeholder="Last name" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <input type="email" class="form-input" id="cf-email" placeholder="you@email.com" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Subject</label>
+        <input type="text" class="form-input" id="cf-subject" placeholder="What's on your mind?" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Message</label>
+        <textarea class="form-input" id="cf-message" placeholder="Tell us more..."></textarea>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:0.5rem" onclick="submitContact()">Send Message →</button>
+    </div>
+    <div class="contact-confirm" id="contact-confirm" style="display:none;grid-column:2">
+      <h4>Message received! 👋</h4>
+      <p>Thanks for reaching out. We'll get back to you within one business day.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">First<span>Round</span></div>
+    <div class="footer-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('about')">About</a>
+      <a onclick="showPage('how')">How It Works</a>
+      <a onclick="showPage('coach')">AI Coach</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+    <div class="footer-copy">© 2026 FirstRound. All rights reserved.</div>
+  </footer>
+</div>
+
+
+<!-- ── AUTH MODAL ── -->
+<div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box" style="position:relative">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <div id="modal-login">
+      <div class="modal-title">Welcome back.</div>
+      <div class="modal-sub">Log in to continue your prep.</div>
+      <div class="modal-err" id="login-err"></div>
+      <div class="mfield"><label>Email</label><input type="email" id="m-login-email" placeholder="you@university.edu" /></div>
+      <div class="mfield"><label>Password</label><input type="password" id="m-login-pw" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()" /></div>
+      <button class="btn btn-primary" style="width:100%" onclick="doLogin()" id="login-submit-btn">Log in</button>
+      <div class="modal-switch">No account? <a onclick="switchModal('register')">Create one free →</a></div>
+    </div>
+
+    <div id="modal-register" style="display:none">
+      <div class="modal-title">Let's get started.</div>
+      <div class="modal-sub">Free to join. No credit card needed.</div>
+      <div class="modal-err" id="reg-err"></div>
+      <div class="mfield"><label>Full Name</label><input type="text" id="m-reg-name" placeholder="Your name" /></div>
+      <div class="mfield"><label>Email</label><input type="email" id="m-reg-email" placeholder="you@university.edu" /></div>
+      <div class="mfield"><label>Password</label><input type="password" id="m-reg-pw" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter')doRegister()" /></div>
+      <button class="btn btn-primary" style="width:100%" onclick="doRegister()" id="reg-submit-btn">Create my account →</button>
+      <div class="modal-switch">Already have one? <a onclick="switchModal('login')">Log in</a></div>
+    </div>
+  </div>
+</div>
+<div class="toast-fr" id="fr-toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const API = 'https://firstround-backend-snom.onrender.com';
+let frToken = localStorage.getItem('fr_token');
+let frUser = JSON.parse(localStorage.getItem('fr_user') || 'null');
+let ivMessages = [], ivSessionId = null, ivRole = '', ivCompany = '', ivLastScore = null;
+
+// ── SCRIPTED DEMO ────────────────────────────────
+let demoRole = 'Software Engineering Intern';
+let demoTurn = 0;
+let demoInited = false;
+
+const demoFlows = {
+  'Software Engineering Intern': {
+    open: "Hey! I'm your FirstRound coach. Let's prep for your <strong>Software Engineering Intern</strong> interview.<br><br>Here's your first question — take your time:<br><br><em>\"Tell me about a challenging technical problem you solved. Walk me through how you approached it.\"</em>",
+    feedback: (ans) => {
+      if (ans.length < 40) return "Give me a little more to work with! Walk me through the actual problem — what were you building, and what went wrong?";
+      return `Good start — I can hear you have a real story here. Let's sharpen it.<br><br><strong>What's working:</strong> You mentioned the problem and your approach.<br><strong>What's missing:</strong> The <em>result</em>. What actually happened? How much faster/better was it after your fix?<br><br>Try adding: <em>"As a result, [X happened] — which taught me [Y]."</em><br><br><span class="score">📈 Structure score: 72 → 88 with a strong result</span>`;
+    },
+    followup: "Nice improvement! One more: <em>\"Where do you see yourself in 5 years?\"</em> — don't overthink it, just be honest."
+  },
+  'Marketing Analyst': {
+    open: "Ready to prep for your <strong>Marketing Analyst</strong> interview? Let's go.<br><br>First question:<br><br><em>\"Tell me about a time you used data to make a decision or solve a problem.\"</em>",
+    feedback: (ans) => {
+      if (ans.length < 40) return "Dig a little deeper — what data did you actually use, and what did you do with what you found?";
+      return `Solid foundation. Here's how to make it stronger:<br><br><strong>Quantify the impact.</strong> Even rough numbers help: "increased engagement by ~30%" or "reduced costs by $X."<br><br>Try framing it as: <em>"I noticed [data point], so I [action], which led to [measurable result]."</em><br><br><span class="score">📈 Impact score: 65 → 90 with one number added</span>`;
+    },
+    followup: "Great! Next: <em>\"How do you stay current on marketing trends?\"</em> — be specific, generic answers won't stand out."
+  },
+  'Finance Intern': {
+    open: "Let's get you ready for your <strong>Finance Intern</strong> interview.<br><br>Classic opener coming at you:<br><br><em>\"Walk me through a time you had to analyze something complex with limited information.\"</em>",
+    feedback: (ans) => {
+      if (ans.length < 40) return "Finance interviewers love structured thinking — tell me more about how you broke the problem down.";
+      return `Good instincts. Finance interviews reward structured thinking above all else.<br><br><strong>Tip:</strong> Use explicit structure language — "First, I identified... Second, I analyzed... Finally, I recommended..."<br><br>Also: tie it to a business outcome if possible.<br><br><span class="score">📈 Analytical clarity: 70 → 92 with explicit structure</span>`;
+    },
+    followup: "Perfect. Last one: <em>\"Why finance, and why this firm specifically?\"</em> — this is where most people give a generic answer. Don't."
+  },
+  'Product Manager': {
+    open: "PM interviews are different — they test your product thinking. Let's dive in.<br><br>Here's your first question:<br><br><em>\"Tell me about a product you use every day and how you'd improve it.\"</em>",
+    feedback: (ans) => {
+      if (ans.length < 40) return "Go deeper — which users are you thinking about, and what problem are you actually solving for them?";
+      return `You've got the right instinct picking something familiar. Here's how PMs think about answers like this:<br><br><strong>Lead with the user, not the feature.</strong> Don't say "I'd add a dark mode." Say "Power users who use this for 3+ hours often report eye strain — dark mode addresses that specific pain."<br><br>Frame as: <em>"User X has problem Y. I'd solve it with Z because [reason], and I'd measure success by [metric]."</em><br><br><span class="score">📈 PM thinking score: 68 → 91 with user-first framing</span>`;
+    },
+    followup: "That's how PMs think! Next: <em>\"How do you prioritize when everything feels urgent?\"</em> — there's a right framework here."
+  }
+};
+
+function setRole(el, role) {
+  document.querySelectorAll('.role-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  demoRole = role; demoTurn = 0;
+  document.getElementById('demo-chat').innerHTML = '';
+  demoInited = false;
+  initDemo();
+}
+
+function initDemo() {
+  if (document.getElementById('demo-chat').innerHTML !== '' && demoInited) return;
+  demoInited = true; demoTurn = 0;
+  const chat = document.getElementById('demo-chat');
+  chat.innerHTML = '';
+  setTimeout(() => addDemoMsg('ai', demoFlows[demoRole].open), 300);
+}
+
+function addDemoMsg(who, html) {
+  const chat = document.getElementById('demo-chat');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap ' + who;
+  wrap.innerHTML = `<div class="msg-avatar ${who}">${who === 'ai' ? 'FR' : 'ME'}</div><div class="msg-bubble ${who}">${html}</div>`;
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showDemoTyping() {
+  const chat = document.getElementById('demo-chat');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap ai'; wrap.id = 'demo-typing';
+  wrap.innerHTML = `<div class="msg-avatar ai">FR</div><div class="msg-bubble ai"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chat.appendChild(wrap); chat.scrollTop = chat.scrollHeight;
+}
+
+function sendDemo() {
+  const input = document.getElementById('demo-input');
+  const val = input.value.trim(); if (!val) return;
+  input.value = '';
+  addDemoMsg('user', val);
+  const flow = demoFlows[demoRole];
+  showDemoTyping();
+  setTimeout(() => {
+    document.getElementById('demo-typing')?.remove();
+    if (demoTurn === 0) { addDemoMsg('ai', flow.feedback(val)); demoTurn++; }
+    else if (demoTurn === 1) { addDemoMsg('ai', flow.followup); demoTurn++; }
+    else {
+      addDemoMsg('ai', "That\u2019s solid work. You\u2019re getting it. \ud83d\udcaa<br><br>Want the <strong>real AI</strong>? <a onclick='showPage(\"coach\")' style='color:var(--rust);cursor:pointer;font-weight:600'>Open the AI Coach \u2192</a>");
+      demoTurn = 0;
+    }
+  }, 1100);
+}
+
+// ── PAGE ROUTING ──────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('nav-' + id)?.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  if (id === 'how') initDemo();
+  if (id === 'coach') initProductArea();
+}
+
+// ── EMAIL FORM ────────────────────────────────────
+function submitEmail() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  if (!name || !email) { alert('Please enter your name and email.'); return; }
+  if (!email.includes('@')) { alert('Please enter a valid email address.'); return; }
+  document.getElementById('email-form-wrap').style.display = 'none';
+  document.getElementById('form-confirm').style.display = 'block';
+}
+
+// ── CONTACT FORM ──────────────────────────────────
+function submitContact() {
+  const email = document.getElementById('cf-email').value.trim();
+  const msg = document.getElementById('cf-message').value.trim();
+  if (!email || !msg) { alert('Please fill in your email and message.'); return; }  document.getElementById('contact-form-wrap').style.display = 'none';
+  document.getElementById('contact-confirm').style.display = 'block';
+}
+
+// ── AUTH MODAL ────────────────────────────────────
+function openModal(mode) {
+  document.getElementById('auth-modal').classList.add('open');
+  switchModal(mode);
+}
+function closeModal() { document.getElementById('auth-modal').classList.remove('open'); }
+function switchModal(mode) {
+  document.getElementById('modal-login').style.display = mode === 'login' ? '' : 'none';
+  document.getElementById('modal-register').style.display = mode === 'register' ? '' : 'none';
+  document.getElementById('login-err').style.display = 'none';
+  document.getElementById('reg-err').style.display = 'none';
+}
+
+async function doLogin() {
+  const email = document.getElementById('m-login-email').value.trim();
+  const pw = document.getElementById('m-login-pw').value;
+  const btn = document.getElementById('login-submit-btn');
+  const err = document.getElementById('login-err');
+  err.style.display = 'none';
+  if (!email || !pw) { showModalErr(err, 'Please fill in both fields.'); return; }
+  btn.innerHTML = '<span class="spinner-sm"></span> Logging in...'; btn.disabled = true;
+  try {
+    const res = await frApi('/auth/login', 'POST', { email, password: pw }, false);
+    setAuth(res.token, res.user);
+    closeModal(); onLogin();
+  } catch(e) {
+    showModalErr(err, e.message || 'Invalid email or password.');
+    btn.textContent = 'Log in'; btn.disabled = false;
+  }
+}
+
+async function doRegister() {
+  const name = document.getElementById('m-reg-name').value.trim();
+  const email = document.getElementById('m-reg-email').value.trim();
+  const pw = document.getElementById('m-reg-pw').value;
+  const btn = document.getElementById('reg-submit-btn');
+  const err = document.getElementById('reg-err');
+  err.style.display = 'none';
+  if (!name || !email || !pw) { showModalErr(err, 'Please fill in all fields.'); return; }
+  btn.innerHTML = '<span class="spinner-sm"></span> Creating...'; btn.disabled = true;
+  try {
+    const res = await frApi('/auth/register', 'POST', { name, email, password: pw }, false);
+    setAuth(res.token, res.user);
+    closeModal(); onLogin();
+  } catch(e) {
+    showModalErr(err, e.message || 'Registration failed. Try again.');
+    btn.textContent = 'Create my account →'; btn.disabled = false;
+  }
+}
+
+function showModalErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
+
+function setAuth(t, user) {
+  frToken = t; frUser = user;
+  localStorage.setItem('fr_token', t);
+  localStorage.setItem('fr_user', JSON.stringify(user));
+}
+
+function doLogout() {
+  frToken = null; frUser = null;
+  localStorage.removeItem('fr_token'); localStorage.removeItem('fr_user');
+  document.getElementById('nav-user-chip').style.display = 'none';
+  document.getElementById('nav-user-area').style.display = '';
+  document.getElementById('iv-tabs').style.display = 'none';
+  document.querySelectorAll('.iv-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('iv-gate-panel').classList.add('active');
+  frToast('Logged out.');
+}
+
+function onLogin() {
+  document.getElementById('nav-user-area').style.display = 'none';
+  document.getElementById('nav-user-chip').style.display = '';
+  document.getElementById('chip-name').textContent = frUser.name.split(' ')[0];
+  document.getElementById('iv-tabs').style.display = 'flex';
+  document.getElementById('iv-gate-panel').classList.remove('active');
+  switchIvTab('interview', document.querySelector('.iv-tab'));
+  frToast('Welcome, ' + frUser.name.split(' ')[0] + '! 🎉');
+}
+
+function initProductArea() {
+  if (frToken && frUser) { onLogin(); }
+}
+
+// ── TAB SWITCHER ──────────────────────────────────
+function switchIvTab(name, btn) {
+  document.querySelectorAll('.iv-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.iv-panel').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('iv-' + name + '-panel').classList.add('active');
+}
+
+// ── MOCK INTERVIEW ────────────────────────────────
+async function startInterview() {
+  const role = document.getElementById('iv-role').value.trim();
+  if (!role) { frToast('Enter the role first.'); return; }
+  ivRole = role; ivCompany = document.getElementById('iv-company').value.trim();
+  ivMessages = []; ivSessionId = null; ivLastScore = null;
+  document.getElementById('iv-setup').style.display = 'none';
+  document.getElementById('iv-chat-area').style.display = '';
+  document.getElementById('iv-msgs').innerHTML = '';
+  addIvMsg('ai', '<div class="typing"><span></span><span></span><span></span></div>', 'iv-typing');
+  try {
+    const params = new URLSearchParams({ role });
+    if (ivCompany) params.append('company', ivCompany);
+    const data = await frApi('/interview/start?' + params);
+    document.getElementById('iv-typing')?.remove();
+    ivMessages.push({ role: 'user', content: 'Start a mock interview for ' + role + (ivCompany ? ' at ' + ivCompany : '') });
+    ivMessages.push({ role: 'assistant', content: data.reply });
+    addIvMsg('ai', fmtMsg(data.reply));
+  } catch(e) {
+    document.getElementById('iv-typing')?.remove();
+    addIvMsg('ai', 'Could not connect to backend. Make sure it\u2019s running on port 8000.');
+  }
+}
+
+async function sendIvMsg() {
+  const input = document.getElementById('iv-msg-input');
+  const val = input.value.trim(); if (!val) return;
+  input.value = '';
+  ivMessages.push({ role: 'user', content: val });
+  addIvMsg('user', val);
+  addIvMsg('ai', '<div class="typing"><span></span><span></span><span></span></div>', 'iv-typing');
+  try {
+    const data = await frApi('/interview/chat', 'POST', { role: ivRole, company: ivCompany || null, messages: ivMessages });
+    document.getElementById('iv-typing')?.remove();
+    ivMessages.push({ role: 'assistant', content: data.reply });
+    if (data.score) {
+      ivLastScore = data.score;
+      document.getElementById('iv-score-wrap').style.display = '';
+      document.getElementById('iv-score-num').textContent = Math.round(data.score) + '/100';
+    }
+    addIvMsg('ai', fmtMsg(data.reply));
+  } catch(e) {
+    document.getElementById('iv-typing')?.remove();
+    addIvMsg('ai', 'Connection error. Check backend.');
+  }
+}
+
+function addIvMsg(who, html, id) {
+  const msgs = document.getElementById('iv-msgs');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap ' + who;
+  if (id) wrap.id = id;
+  wrap.innerHTML = '<div class="msg-avatar ' + who + '">' + (who==='ai'?'FR':'ME') + '</div><div class="msg-bubble ' + who + '">' + html + '</div>';
+  msgs.appendChild(wrap); msgs.scrollTop = msgs.scrollHeight;
+}
+
+function fmtMsg(text) {
+  return text
+    .replace(/FEEDBACK:/g,'<strong>Feedback:</strong>')
+    .replace(/STRONGER VERSION:/g,'<strong>Stronger version:</strong>')
+    .replace(/SCORE: (\d+)/g,'<span class="score">📈 Score: $1/100</span>')
+    .replace(/NEXT_QUESTION:/g,'<br><strong>Next question:</strong>')
+    .replace(/SESSION_COMPLETE/g,'<strong>✅ Session complete!</strong>')
+    .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+}
+
+async function saveIvSession() {
+  if (ivMessages.length < 2) { frToast('Have a conversation first!'); return; }
+  try {
+    const data = await frApi('/interview/save', 'POST', {
+      session_id: ivSessionId,
+      title: ivRole + (ivCompany ? ' @ ' + ivCompany : ''),
+      role: ivRole, company: ivCompany || null,
+      messages: ivMessages, score: ivLastScore
+    });
+    ivSessionId = data.session_id;
+    frToast('Session saved! ✅');
+  } catch(e) { frToast('Could not save — backend issue.'); }
+}
+
+function resetInterview() {
+  ivMessages = []; ivSessionId = null;
+  document.getElementById('iv-setup').style.display = '';
+  document.getElementById('iv-chat-area').style.display = 'none';
+  document.getElementById('iv-msgs').innerHTML = '';
+  document.getElementById('iv-score-wrap').style.display = 'none';
+}
+
+// ── ANSWER COACH ──────────────────────────────────
+async function analyzeAnswer() {
+  const q = document.getElementById('coach-q').value.trim();
+  const a = document.getElementById('coach-a').value.trim();
+  const role = document.getElementById('coach-role').value.trim();
+  if (!q || !a) { frToast('Enter both the question and your answer.'); return; }
+  const btn = document.getElementById('coach-btn');
+  btn.innerHTML = '<span class="spinner-sm"></span> Coaching...'; btn.disabled = true;
+  try {
+    const r = await frApi('/coach/analyze', 'POST', { question: q, answer: a, role: role || null });
+    const scoreColor = r.score >= 80 ? '#3d5c38' : r.score >= 60 ? '#d4a843' : '#bf4a28';
+    document.getElementById('coach-result').innerHTML = `
+      <div style="text-align:center;margin-bottom:1rem">
+        <div style="font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:900;color:${scoreColor};line-height:1">${r.score}</div>
+        <div style="font-size:0.75rem;color:var(--muted)">out of 100</div>
+      </div>
+      <div style="margin-bottom:0.8rem">
+        ${Object.entries(r.score_breakdown).map(([k,v])=>`
+          <div class="score-bar-wrap"><span style="width:80px;flex-shrink:0">${k}</span>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:${v}%"></div></div>
+          <span style="width:28px;text-align:right;font-weight:600;font-size:0.77rem">${v}</span></div>`).join('')}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.8rem">
+        ${r.what_worked.map(w=>`<span class="score" style="background:rgba(61,92,56,0.1);color:#3d5c38">✓ ${w}</span>`).join('')}
+        ${r.what_to_improve.map(w=>`<span class="score" style="background:rgba(191,74,40,0.08);color:var(--rust)">↑ ${w}</span>`).join('')}
+      </div>
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--rust);margin-bottom:0.4rem">Stronger version</div>
+      <div style="background:var(--warm);border-radius:8px;padding:0.9rem;font-size:0.85rem;line-height:1.7;margin-bottom:0.7rem">${r.stronger_version}</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.6rem;font-weight:300">${r.why_stronger}</div>
+      <div style="background:var(--ink);color:var(--cream);border-radius:8px;padding:0.8rem;font-size:0.83rem;line-height:1.6"><strong style="color:var(--gold)">Remember: </strong>${r.one_liner_tip}</div>`;
+  } catch(e) { frToast('Could not analyze. Is the backend running?'); }
+  btn.textContent = 'Coach my answer →'; btn.disabled = false;
+}
+
+// ── PREP PLAN ─────────────────────────────────────
+async function generatePrep() {
+  const jd = document.getElementById('prep-jd').value.trim();
+  if (jd.length < 50) { frToast('Paste the full job description first.'); return; }
+  const btn = document.getElementById('prep-btn');
+  btn.innerHTML = '<span class="spinner-sm"></span> Analyzing...'; btn.disabled = true;
+  document.getElementById('prep-result').innerHTML = '';
+  try {
+    const { plan } = await frApi('/prep/generate', 'POST', { job_description: jd });
+    document.getElementById('prep-result').innerHTML = `
+      <div style="margin-bottom:1rem">
+        <div style="font-family:'Playfair Display',serif;font-size:1.3rem">${plan.role}${plan.company?' <span style=\"color:var(--muted);font-size:0.9rem\">@ '+plan.company+'</span>':''}</div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--rust);margin-bottom:0.5rem">Likely Questions</div>
+        ${plan.likely_questions.map(q=>`
+          <div class="q-item" onclick="this.classList.toggle('open')" style="margin-bottom:0.5rem">
+            <div class="q-text">${q.question}</div>
+            <div class="q-meta"><span class="q-type">${q.type}</span></div>
+            <div class="q-why">💡 ${q.why_they_ask}</div>
+          </div>`).join('')}
+      </div>
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--rust);margin-bottom:0.5rem">Insider Tips</div>
+      <ul class="tip-list">${(plan.insider_tips||[]).map(t=>`<li>${t}</li>`).join('')}</ul>`;
+  } catch(e) { frToast('Could not generate plan. Is the backend running?'); }
+  btn.textContent = 'Generate prep plan →'; btn.disabled = false;
+}
+
+// ── API HELPER ────────────────────────────────────
+async function frApi(path, method='GET', body=null, auth=true) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (auth && frToken) opts.headers['Authorization'] = 'Bearer ' + frToken;
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(API + path, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.detail || 'Request failed');
+  return data;
+}
+
+// ── TOAST ─────────────────────────────────────────
+function frToast(msg) {
+  const t = document.getElementById('fr-toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ── INIT ─────────────────────────────
+window.addEventListener('load', () => {
+  if (frToken && frUser) {
+    document.getElementById('nav-user-area').style.display = 'none';
+    document.getElementById('nav-user-chip').style.display = '';
+    document.getElementById('chip-name').textContent = frUser.name.split(' ')[0];
+  }
+});
+</script>
+</body>
+</html>
